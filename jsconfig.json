@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "module": "es2022",
+        "moduleResolution": "bundler",
+        "lib": [
+            "es2022"
+        ],
+        "allowJs": true,
+        "checkJs": true,
+        "strict": true,
+        "noEmit": true,
+    },
+    "include": [
+        "ambient.d.ts",
+        "inhibitionindicator@monyxie.github.io/**/*.js"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
