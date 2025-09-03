@@ -9,14 +9,7 @@ Inhibition Indicator is a Gnome Shell extension that shows the current inhibitio
 
 Dev installation
 ```bash
-mkdir -p ~/.local/share/gnome-shell/extensions
-ln -s "$(pwd)/inhibitionindicator@monyxie.github.io" ~/.local/share/gnome-shell/extensions
-# gnome-extensions enable inhibitionindicator@monyxie.github.io
-```
-
-Compile schemas
-```bash
-glib-compile-schemas inhibitionindicator@monyxie.github.io/schemas
+make install
 ```
 
 `cli.js` can be used for debugging some parts of the code (because debugging Gnome Extensions is PITA). Run `cli.js` with
@@ -31,7 +24,7 @@ xgettext --from-code=UTF-8 --output=po/inhibitionindicator@monyxie.github.io.pot
 
 Pack the extension for distribution
 ```bash
-gnome-extensions pack inhibitionindicator@monyxie.github.io --extra-source=lib.js --extra-source=assets/
+make pack
 ```
 
 For now, only dev dependencies are defined in `package.json`, and there's no build step.

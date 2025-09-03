@@ -15,14 +15,13 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-'use strict';
+"use strict";
 
-import Gio from 'gi://Gio';
+import Gio from "gi://Gio";
 
-/** @type {DBusConnection|null} */
-let bus;
+let bus: Gio.DBusConnection | null;
 
-function getBus() {
+function getBus(): Gio.DBusConnection {
     if (!bus) {
         // Get the session D-Bus
         bus = Gio.bus_get_sync(Gio.BusType.SESSION, null);
@@ -30,70 +29,61 @@ function getBus() {
     return bus;
 }
 
-/**
- * @returns {Promise<string>}
- */
-export function getInhibitorAppId(objectPath) {
+export function getInhibitorAppId(objectPath: string): Promise<string> {
     return new Promise((resolve, reject) => {
         getBus().call(
-            'org.gnome.SessionManager',
+            "org.gnome.SessionManager",
             objectPath,
-            'org.gnome.SessionManager.Inhibitor',
-            'GetAppId',
+            "org.gnome.SessionManager.Inhibitor",
+            "GetAppId",
             null,
             null,
             Gio.DBusCallFlags.NONE,
             -1,
             null,
             (conn, res) => {
-                const data = conn.call_finish(res);
+                const data = conn?.call_finish(res);
                 if (data) {
                     resolve(data.get_child_value(0).get_string()[0]);
                 } else {
-                    reject('D-Bus call failed');
+                    reject("D-Bus call failed");
                 }
             },
         );
     });
 }
 
-/**
- * @returns {Promise<string>}
- */
-export function getInhibitorReason(objectPath) {
+export function getInhibitorReason(objectPath: string): Promise<string> {
     return new Promise((resolve, reject) => {
         getBus().call(
-            'org.gnome.SessionManager',
+            "org.gnome.SessionManager",
             objectPath,
-            'org.gnome.SessionManager.Inhibitor',
-            'GetReason',
+            "org.gnome.SessionManager.Inhibitor",
+            "GetReason",
             null,
             null,
             Gio.DBusCallFlags.NONE,
             -1,
             null,
             (conn, res) => {
-                const data = conn.call_finish(res);
+                const data = conn?.call_finish(res);
                 if (data) {
                     resolve(data.get_child_value(0).get_string()[0]);
                 } else {
-                    reject('D-Bus call failed');
+                    reject("D-Bus call failed");
                 }
             },
         );
     });
 }
 
-/**
- * @returns {Promise<string[]>}
- */
-export function getInhibitorIds() {
+export function getInhibitorIds(): Promise<string[]> {
     return new Promise((resolve, reject) => {
         getBus().call(
-            'org.gnome.SessionManager',
-            '/org/gnome/SessionManager',
-            'org.gnome.SessionManager',
-            'GetInhibitors',
+            "org.gnome.SessionManager",
+            "/org/gnome/SessionManager",
+            "org.gnome.SessionManager",
+            "GetInhibitors",
             null,
             null,
             Gio.DBusCallFlags.NONE,
@@ -101,35 +91,29 @@ export function getInhibitorIds() {
             null,
             (conn, res) => {
                 // data type string: (ao)
-                const data = conn.call_finish(res);
+                const data = conn?.call_finish(res);
                 if (data) {
                     resolve(data.get_child_value(0).get_objv());
                 } else {
-                    reject('D-Bus call failed');
+                    reject("D-Bus call failed");
                 }
             },
         );
     });
 }
 
-/** @type {number|null} */
-let addedSubId = null;
-/** @type {number|null} */
-let removedSubId = null;
-/** @type {Array<() => void>} */
-const listeners = [];
+let addedSubId: number | null = null;
+let removedSubId: number | null = null;
+const listeners: Array<() => void> = [];
 
-/**
- * @param callback () => void
- */
-export function addInhibitorChangeListener(callback) {
+export function addInhibitorChangeListener(callback: { (): void; (): void }) {
     listeners.push(callback);
     if (!addedSubId) {
         addedSubId = getBus().signal_subscribe(
-            'org.gnome.SessionManager',
-            'org.gnome.SessionManager',
-            'InhibitorAdded',
-            '/org/gnome/SessionManager',
+            "org.gnome.SessionManager",
+            "org.gnome.SessionManager",
+            "InhibitorAdded",
+            "/org/gnome/SessionManager",
             null,
             null,
             () => {
@@ -141,10 +125,10 @@ export function addInhibitorChangeListener(callback) {
     }
     if (!removedSubId) {
         removedSubId = getBus().signal_subscribe(
-            'org.gnome.SessionManager',
-            'org.gnome.SessionManager',
-            'InhibitorRemoved',
-            '/org/gnome/SessionManager',
+            "org.gnome.SessionManager",
+            "org.gnome.SessionManager",
+            "InhibitorRemoved",
+            "/org/gnome/SessionManager",
             null,
             null,
             () => {
