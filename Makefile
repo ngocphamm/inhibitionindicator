@@ -22,7 +22,7 @@ dist: js schemas
 	@cp src/metadata.json dist/
 
 $(NAME).zip: dist
-	@(cd dist && zip ../$(NAME).zip -9r .)
+	@(cd dist && zip ../$(NAME).zip -9r . -x schemas/gschemas.compiled)
 
 pack: $(NAME).zip
 
